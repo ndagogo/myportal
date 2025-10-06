@@ -1,7 +1,20 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2C2D Global Solutions - Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Our Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
     <!-- Navigation Sidebar -->
     <div class="sidebar col-lg-2 col-md-3 col-4 p-0">
         <div class="p-4 text-center border-bottom">
@@ -19,47 +32,41 @@
             </li>
             
             <!-- Admin/Staff Specific Menu Items -->
-            {% if user.user_type == 'admin' or user.user_type == 'super_admin' or user.user_type == 'staff' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'task_list' %}">
+            <li class="nav-item admin-staff-only">
+                <a class="nav-link" href="#">
                     <i class="fas fa-tasks"></i>
                     <span>Task Management</span>
                 </a>
             </li>
-            {% endif %}
             
-            {% if user.user_type == 'admin' or user.user_type == 'super_admin' %}
-            <li class="nav-item">
+            <li class="nav-item admin-only">
                 <a class="nav-link" href="#">
                     <i class="fas fa-users-cog"></i>
                     <span>User Management</span>
                 </a>
             </li>
-            {% endif %}
             
             <!-- Partner Specific Menu Items -->
-            {% if user.user_type == 'partner' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'create_task' %}">
+            <li class="nav-item partner-only">
+                <a class="nav-link" href="#">
                     <i class="fas fa-plus-circle"></i>
                     <span>Submit New Job</span>
                 </a>
             </li>
             
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'task_list' %}">
+            <li class="nav-item partner-only">
+                <a class="nav-link" href="#">
                     <i class="fas fa-history"></i>
                     <span>Job History</span>
                 </a>
             </li>
-            {% endif %}
             
             <!-- Common Menu Items -->
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-wallet"></i>
                     <span>Wallet</span>
-                    <span class="badge bg-success ms-2">${{ user.wallet_balance }}</span>
+                    <span class="badge bg-success ms-2">$2,540</span>
                 </a>
             </li>
             
@@ -79,7 +86,7 @@
             </li>
             
             <li class="nav-item mt-5">
-                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                <a class="nav-link text-danger" href="#">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -105,7 +112,28 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end p-2" style="width: 300px;">
                             <h6 class="dropdown-header">Notifications</h6>
-                            <!-- Notifications will be populated here -->
+                            <div class="dropdown-item mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info rounded-circle p-2 me-2">
+                                        <i class="fas fa-tasks text-white"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">New task assigned: Birth Certificate</p>
+                                        <small class="text-muted">10 minutes ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle p-2 me-2">
+                                        <i class="fas fa-check-circle text-white"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">Task #1234 has been approved</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item text-center text-primary">View all notifications</a>
                         </ul>
@@ -114,10 +142,10 @@
                     <div class="dropdown">
                         <a href="#" class="dropdown-toggle text-dark text-decoration-none d-flex align-items-center" 
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random" class="user-avatar me-2">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=random" class="user-avatar me-2">
                             <div class="d-none d-md-block">
-                                <p class="mb-0">{{ user.get_full_name|default:user.username }}</p>
-                                <small class="text-muted">{{ user.get_user_type_display }}</small>
+                                <p class="mb-0">Admin User</p>
+                                <small class="text-muted">Administrator</small>
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -125,54 +153,784 @@
                             <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-wallet me-2"></i> Wallet</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <!-- Dashboard Content -->
+        <!-- Dashboard Content - Will be dynamically loaded based on user type -->
         <div id="dashboard-content">
-            {% if user.user_type == 'admin' or user.user_type == 'super_admin' %}
-                {% include 'portal/admin_dashboard.html' %}
-            {% elif user.user_type == 'staff' %}
-                {% include 'portal/staff_dashboard.html' %}
-            {% elif user.user_type == 'partner' %}
-                {% include 'portal/partner_dashboard.html' %}
-            {% endif %}
+            <!-- Content will be loaded here by JavaScript based on user type -->
         </div>
     </div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-    // User types: 'admin', 'staff', 'partner'
-    const userType = '{{ user.user_type }}';
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    // Load the dashboard when the page is ready
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize charts based on user type
-        if (userType === 'admin' || userType === 'super_admin') {
-            initializeAdminCharts();
-        } else if (userType === 'staff') {
-            initializeStaffCharts();
-        } else if (userType === 'partner') {
-            initializePartnerCharts();
+    <script>
+        // User types: 'admin', 'staff', 'partner'
+        // This would normally come from Django template context
+        const userType = '{{ user.user_type }}'; 
+        
+        // Function to load appropriate dashboard based on user type
+        function loadDashboard() {
+            const contentDiv = document.getElementById('dashboard-content');
+            
+            // Hide/show menu items based on user type
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = userType === 'admin' ? 'block' : 'none';
+            });
+            
+            document.querySelectorAll('.staff-only').forEach(el => {
+                el.style.display = userType === 'staff' ? 'block' : 'none';
+            });
+            
+            document.querySelectorAll('.partner-only').forEach(el => {
+                el.style.display = userType === 'partner' ? 'block' : 'none';
+            });
+            
+            document.querySelectorAll('.admin-staff-only').forEach(el => {
+                el.style.display = (userType === 'admin' || userType === 'staff') ? 'block' : 'none';
+            });
+            
+            // Load the appropriate dashboard content
+            if (userType === 'admin') {
+                contentDiv.innerHTML = adminDashboard();
+                initializeAdminCharts();
+            } else if (userType === 'staff') {
+                contentDiv.innerHTML = staffDashboard();
+                initializeStaffCharts();
+            } else if (userType === 'partner') {
+                contentDiv.innerHTML = partnerDashboard();
+                initializePartnerCharts();
+            }
         }
-    });
-    
-    // Chart initialization functions would go here
-    function initializeAdminCharts() {
-        // Admin chart initialization code
-    }
-    
-    function initializeStaffCharts() {
-        // Staff chart initialization code
-    }
-    
-    function initializePartnerCharts() {
-        // Partner chart initialization code
-    }
-</script>
-{% endblock %}
+        
+        // Admin Dashboard
+        function adminDashboard() {
+            return `
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Admin Dashboard</h4>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create New Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Total Tasks</h6>
+                                        <h3 class="fw-bold">142</h3>
+                                        <p class="card-text text-success"><small>+12% from last week</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-primary">
+                                        <i class="fas fa-tasks text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Pending Tasks</h6>
+                                        <h3 class="fw-bold">24</h3>
+                                        <p class="card-text text-warning"><small>Waiting for action</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-warning">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Completed Tasks</h6>
+                                        <h3 class="fw-bold">98</h3>
+                                        <p class="card-text text-success"><small>+8% from last week</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-success">
+                                        <i class="fas fa-check-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Revenue</h6>
+                                        <h3 class="fw-bold">$5,240</h3>
+                                        <p class="card-text text-success"><small>+18% from last week</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-info">
+                                        <i class="fas fa-dollar-sign text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts and Tasks -->
+                <div class="row mb-4">
+                    <div class="col-md-8 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">Task Overview</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="taskChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">Task Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="taskDistributionChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Tasks -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Recent Tasks</h5>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Task ID</th>
+                                                <th>Applicant</th>
+                                                <th>Service Type</th>
+                                                <th>Assigned To</th>
+                                                <th>Deadline</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#TASK-001</td>
+                                                <td>John Doe</td>
+                                                <td>Birth Certificate</td>
+                                                <td>Sarah Johnson</td>
+                                                <td>24 Oct 2023</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#TASK-002</td>
+                                                <td>Jane Smith</td>
+                                                <td>Passport Renewal</td>
+                                                <td>Michael Brown</td>
+                                                <td>22 Oct 2023</td>
+                                                <td><span class="badge bg-info">Processing</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#TASK-003</td>
+                                                <td>Robert Johnson</td>
+                                                <td>Name Change</td>
+                                                <td>Emily Davis</td>
+                                                <td>20 Oct 2023</td>
+                                                <td><span class="badge bg-success">Completed</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#TASK-004</td>
+                                                <td>Maria Garcia</td>
+                                                <td>Visa Application</td>
+                                                <td>David Wilson</td>
+                                                <td>18 Oct 2023</td>
+                                                <td><span class="badge bg-danger">Queried</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Staff Dashboard
+        function staffDashboard() {
+            return `
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Staff Dashboard</h4>
+                            <div>
+                                <span class="badge bg-info me-2">Performance Score: 92%</span>
+                                <span class="badge bg-success">Wallet: $1,240</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Assigned Tasks</h6>
+                                        <h3 class="fw-bold">18</h3>
+                                        <p class="card-text text-info"><small>Currently working</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-primary">
+                                        <i class="fas fa-tasks text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Pending Review</h6>
+                                        <h3 class="fw-bold">5</h3>
+                                        <p class="card-text text-warning"><small>Waiting for approval</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-warning">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Completed</h6>
+                                        <h3 class="fw-bold">42</h3>
+                                        <p class="card-text text-success"><small>This month</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-success">
+                                        <i class="fas fa-check-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Avg. Time</h6>
+                                        <h3 class="fw-bold">2.4d</h3>
+                                        <p class="card-text text-info"><small>Per task</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-info">
+                                        <i class="fas fa-stopwatch text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts and Tasks -->
+                <div class="row mb-4">
+                    <div class="col-md-7 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">My Performance</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="performanceChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-5 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">Task Types</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="taskTypeChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Tasks -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">My Tasks</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary me-2">Filter</button>
+                                    <button class="btn btn-sm btn-outline-primary">View All</button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item task-item task-pending">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Birth Certificate - James Wilson</h6>
+                                                <small class="text-muted">Assigned by: Admin User • Deadline: Today, 5:00 PM</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-warning me-2">Pending</span>
+                                                <button class="btn btn-sm btn-success">Accept</button>
+                                                <button class="btn btn-sm btn-outline-secondary">Details</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item task-item task-processing">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Passport Renewal - Sophia Brown</h6>
+                                                <small class="text-muted">Assigned by: Admin User • Deadline: Tomorrow, 2:00 PM</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-info me-2">Processing</span>
+                                                <button class="btn btn-sm btn-primary">Update</button>
+                                                <button class="btn btn-sm btn-outline-secondary">Details</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item task-item task-completed">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Name Change - Robert Miller</h6>
+                                                <small class="text-muted">Assigned by: Admin User • Completed: Today, 10:30 AM</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-success me-2">Completed</span>
+                                                <button class="btn btn-sm btn-outline-secondary">Details</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item task-item task-queried">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Visa Application - Emma Thompson</h6>
+                                                <small class="text-muted">Assigned by: Admin User • Queried: Yesterday, 3:45 PM</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-danger me-2">Queried</span>
+                                                <button class="btn btn-sm btn-warning">Resolve</button>
+                                                <button class="btn btn-sm btn-outline-secondary">Details</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Partner Dashboard
+        function partnerDashboard() {
+            return `
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4>Partner Dashboard</h4>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Submit New Job
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Submitted Jobs</h6>
+                                        <h3 class="fw-bold">56</h3>
+                                        <p class="card-text text-info"><small>All time</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-primary">
+                                        <i class="fas fa-paper-plane text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">In Progress</h6>
+                                        <h3 class="fw-bold">12</h3>
+                                        <p class="card-text text-warning"><small>Being processed</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-warning">
+                                        <i class="fas fa-spinner text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Completed</h6>
+                                        <h3 class="fw-bold">38</h3>
+                                        <p class="card-text text-success"><small>Successful jobs</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-success">
+                                        <i class="fas fa-check-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title text-muted">Commission</h6>
+                                        <h3 class="fw-bold">$3,420</h3>
+                                        <p class="card-text text-success"><small>Earned</small></p>
+                                    </div>
+                                    <div class="stats-icon bg-info">
+                                        <i class="fas fa-dollar-sign text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts and Recent Jobs -->
+                <div class="row mb-4">
+                    <div class="col-md-8 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">Job Status Overview</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="jobStatusChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title">Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary mb-2">
+                                        <i class="fas fa-plus-circle me-2"></i>Submit New Job
+                                    </button>
+                                    <button class="btn btn-outline-primary mb-2">
+                                        <i class="fas fa-history me-2"></i>View Job History
+                                    </button>
+                                    <button class="btn btn-outline-primary mb-2">
+                                        <i class="fas fa-wallet me-2"></i>Withdraw Funds
+                                    </button>
+                                    <button class="btn btn-outline-primary mb-2">
+                                        <i class="fas fa-question-circle me-2"></i>Support Center
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Jobs -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-dashboard bg-white">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Recent Job Requests</h5>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Job ID</th>
+                                                <th>Applicant</th>
+                                                <th>Service Type</th>
+                                                <th>Submitted</th>
+                                                <th>Status</th>
+                                                <th>Assigned To</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#JOB-1025</td>
+                                                <td>Thomas Anderson</td>
+                                                <td>Visa Application</td>
+                                                <td>23 Oct 2023</td>
+                                                <td><span class="badge bg-info">Processing</span></td>
+                                                <td>Michael Brown</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#JOB-1024</td>
+                                                <td>Lisa Johnson</td>
+                                                <td>Passport Renewal</td>
+                                                <td>22 Oct 2023</td>
+                                                <td><span class="badge bg-success">Completed</span></td>
+                                                <td>Sarah Johnson</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#JOB-1023</td>
+                                                <td>Mark Williams</td>
+                                                <td>Birth Certificate</td>
+                                                <td>21 Oct 2023</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                                <td>Not Assigned</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#JOB-1022</td>
+                                                <td>Emily Clark</td>
+                                                <td>Name Change</td>
+                                                <td>20 Oct 2023</td>
+                                                <td><span class="badge bg-danger">Queried</span></td>
+                                                <td>David Wilson</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Initialize charts for Admin Dashboard
+        function initializeAdminCharts() {
+            // Task Overview Chart
+            const taskCtx = document.getElementById('taskChart').getContext('2d');
+            new Chart(taskCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Tasks Created',
+                        data: [12, 19, 8, 15, 24, 10, 5],
+                        borderColor: '#4361ee',
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Tasks Completed',
+                        data: [8, 12, 6, 10, 18, 8, 4],
+                        borderColor: '#4cc9f0',
+                        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Task Distribution Chart
+            const distCtx = document.getElementById('taskDistributionChart').getContext('2d');
+            new Chart(distCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Birth Certificate', 'Passport', 'Visa', 'Name Change', 'Others'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            '#4361ee',
+                            '#4cc9f0',
+                            '#7209b7',
+                            '#f72585',
+                            '#ff9e00'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize charts for Staff Dashboard
+        function initializeStaffCharts() {
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: [8, 12, 10, 14],
+                        backgroundColor: '#4361ee',
+                    }, {
+                        label: 'Tasks Pending',
+                        data: [3, 5, 4, 2],
+                        backgroundColor: '#ff9e00',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Task Type Chart
+            const typeCtx = document.getElementById('taskTypeChart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Birth Certificate', 'Passport', 'Visa', 'Name Change'],
+                    datasets: [{
+                        data: [40, 30, 20, 10],
+                        backgroundColor: [
+                            '#4361ee',
+                            '#4cc9f0',
+                            '#7209b7',
+                            '#f72585'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize charts for Partner Dashboard
+        function initializePartnerCharts() {
+            // Job Status Chart
+            const jobCtx = document.getElementById('jobStatusChart').getContext('2d');
+            new Chart(jobCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Submitted',
+                        data: [4, 5, 6, 5, 7, 8, 6, 7, 5, 6],
+                        backgroundColor: '#4361ee',
+                    }, {
+                        label: 'Completed',
+                        data: [3, 4, 5, 4, 6, 7, 5, 6, 4, 5],
+                        backgroundColor: '#4cc9f0',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Load the dashboard when the page is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
